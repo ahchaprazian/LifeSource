@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">LifeSoruce</string>
+    <string name="app_name">LifeSource</string>
+    <string name="helloWorld">Hello World! Test</string>
 </resources>
