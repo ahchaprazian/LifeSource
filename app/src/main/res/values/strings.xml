@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">LifeSource</string>
-    <string name="helloWorld">Hello World! Alex D.</string>
+    <string name="tempMapText">Hello World! Map</string>
+    <string name="tempNewsText">Hello World! News</string>
     <string name="enterNameHint">Name</string>
     <string name="countDownText">Count down</string>
     <string name="defaultDays">0</string>
     <string name="recentReminders">Recent Reminders</string>
+    <string name="tempToolbarIcon">Help</string>
 </resources>
