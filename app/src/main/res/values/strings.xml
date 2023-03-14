@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">LifeSource</string>
     <string name="helloWorld">Hello World! Alex D.</string>
+    <string name="enterNameHint">Name</string>
+    <string name="countDownText">Count down</string>
+    <string name="defaultDays">0</string>
+    <string name="recentReminders">Recent Reminders</string>
 </resources>
