@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LifeSource</string>
     <string name="helloWorld">Hello World! Alex D.</string>
+    <string name="enterNameHint">Name</string>
 </resources>
