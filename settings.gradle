@@ -16,4 +16,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "LifeSoruce"
-include ':app', ':newsapilib'
+include ':app'
