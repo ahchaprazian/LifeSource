@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- update icon later -->
     <item
         android:id="@+id/mapFragment"
-        android:title="@string/tempToolbarIcon"
-        android:icon="@android:drawable/ic_menu_help"/>
-    <!-- update icon later -->
+        android:title="@string/mapIcon"
+        android:icon="@drawable/map_icon"/>
     <item
         android:id="@+id/newsFragment"
-        android:title="@string/tempToolbarIcon"
-        android:icon="@android:drawable/ic_menu_help"/>
-    <!-- update icon later -->
+        android:title="@string/newsIcon"
+        android:icon="@drawable/news_icon"/>
     <item
         android:id="@+id/profileFragment"
-        android:title="@string/tempToolbarIcon"
-        android:icon="@android:drawable/ic_menu_help"/>
+        android:title="@string/profileIcon"
+        android:icon="@drawable/profile_icon"/>
 </menu>

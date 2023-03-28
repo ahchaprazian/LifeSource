@@ -7,4 +7,7 @@
     <string name="defaultDays">0</string>
     <string name="recentReminders">Recent Reminders</string>
     <string name="tempToolbarIcon">Help</string>
+    <string name="mapIcon">Map</string>
+    <string name="newsIcon">News</string>
+    <string name="profileIcon">Profile</string>
 </resources>
