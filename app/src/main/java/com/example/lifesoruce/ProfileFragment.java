@@ -1,13 +1,11 @@
 package com.example.lifesoruce;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.FragmentNavigatorExtrasKt;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.lifesoruce.databinding.FragmentProfileBinding;
 
@@ -19,6 +17,36 @@ public class ProfileFragment extends Fragment {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        /*
+        * When the button in the bottom corner is clicked
+        * the pop up that prompts the user to enter their text is displayed
+        */
+        binding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Show popupLayout
+                binding.popupLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        /*
+        * When the add button in the pop up window is pressed it should
+        * close out then display it inside the recent reminders view
+        * still a work in progress
+        */
+        binding.addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Get text from editText
+                String text = binding.editText.getText().toString();
+
+                // TODO: Add text to list
+
+                // Hide popupLayout
+                binding.popupLayout.setVisibility(View.GONE);
+            }
+        });
 
         return view;
     }
