@@ -64,8 +64,8 @@ public class NewsFragment extends Fragment {
         mArticleList.clear();
 
 
-        AndroidNetworking.get("https://newsapi.org/v2/top-headlines")
-                .addQueryParameter("country", "in")
+        AndroidNetworking.get("https://newsapi.org/v2/everything")
+                .addQueryParameter("q", "blood-donation")
                 .addQueryParameter("apiKey",API_KEY)
                 .addHeaders("token", "1234")
                 .setTag("test")
