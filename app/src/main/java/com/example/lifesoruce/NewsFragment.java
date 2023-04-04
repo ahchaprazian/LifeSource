@@ -63,9 +63,12 @@ public class NewsFragment extends Fragment {
     private void get_news_from_api() {
         mArticleList.clear();
 
-
-        AndroidNetworking.get("https://newsapi.org/v2/top-headlines")
-                .addQueryParameter("country", "in")
+        /* Sends the get request to the news api while displaying everything
+        * set it to display everything related to blood donation using the api
+        * key specified
+        */
+        AndroidNetworking.get("https://newsapi.org/v2/everything")
+                .addQueryParameter("q", "blood-donation")
                 .addQueryParameter("apiKey",API_KEY)
                 .addHeaders("token", "1234")
                 .setTag("test")
