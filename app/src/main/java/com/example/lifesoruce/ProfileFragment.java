@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -15,9 +14,9 @@ import java.util.ArrayList;
 
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
-    private ListView listView;
-    private ArrayList<String> items;
-    private ArrayAdapter<String> adapter;
+    static ListView listView;
+    static ArrayList<String> items;
+    static ListViewAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,9 +50,8 @@ public class ProfileFragment extends Fragment {
                 // Get text from editText
                 String text = binding.editText.getText().toString();
 
-                // TODO: Add text to list
                 items.add(text);
-                adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, items);
+                adapter = new ListViewAdapter(getActivity().getApplicationContext(), items);
                 listView.setAdapter((adapter));
                 // Hide popupLayout
                 binding.popupLayout.setVisibility(View.GONE);
@@ -61,6 +59,11 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public static void removeItem(int remove) {
+        items.remove(remove);
+        listView.setAdapter(adapter);
     }
 
     @Override
