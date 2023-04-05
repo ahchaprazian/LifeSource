@@ -10,4 +10,5 @@
     <string name="mapIcon">Map</string>
     <string name="newsIcon">News</string>
     <string name="profileIcon">Profile</string>
+    <string name="helpText">Welcome to LifeSource, a blood donation app! We aim to incentivize blood donation by highlighting monetary compensation at each donation center. We provide all the tools necessary to navigate the donation process and learn more.\n\nOn the Map screen, look around for different blood donation centers by clicking on each map pin. Upon clicking on a pin, an info window with relevant information about that donation center appears. Click on this info window to be redirected to that donation center\'s website.\n\nOn the News screen, scroll through the news feed to locate an interesting article. Click on an article to open it up.\n\nOn the Profile screen, manage your appointment reminders. Set your name here and add additional reminders. Delete reminders by clicking the accompanying delete icon.</string>
 </resources>

@@ -20,4 +20,9 @@
         android:name="com.example.lifesoruce.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.lifesoruce.HelpFragment"
+        android:label="fragment_help"
+        tools:layout="@layout/fragment_help" />
 </navigation>
