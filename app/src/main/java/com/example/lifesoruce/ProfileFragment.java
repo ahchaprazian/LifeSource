@@ -1,9 +1,12 @@
 package com.example.lifesoruce;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +20,10 @@ public class ProfileFragment extends Fragment {
     static ListView listView;
     static ArrayList<String> items;
     static ListViewAdapter adapter;
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    private EditText newReminder_popup;
+    private Button exit_popupWindow, addItem_popupWindow;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,7 +42,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Show popupLayout
-                binding.popupLayout.setVisibility(View.VISIBLE);
+                //binding.popupLayout.setVisibility(View.VISIBLE);
+                createNewReminderDialog();
             }
         });
 
@@ -44,7 +52,7 @@ public class ProfileFragment extends Fragment {
         * close out then display it inside the recent reminders view
         * still a work in progress
         */
-        binding.addButton.setOnClickListener(new View.OnClickListener() {
+        /*binding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Get text from editText
@@ -56,7 +64,7 @@ public class ProfileFragment extends Fragment {
                 // Hide popupLayout
                 binding.popupLayout.setVisibility(View.GONE);
             }
-        });
+        });*/
 
         return view;
     }
@@ -70,5 +78,37 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void createNewReminderDialog() {
+        dialogBuilder = new AlertDialog.Builder(getActivity());
+        final View contactPopupView = getLayoutInflater().inflate(R.layout.popup, null);
+
+        newReminder_popup = contactPopupView.findViewById(R.id.reminderText);
+        addItem_popupWindow = contactPopupView.findViewById(R.id.addReminderButton);
+        exit_popupWindow = contactPopupView.findViewById(R.id.exitPopupButton);
+
+        dialogBuilder.setView(contactPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        addItem_popupWindow.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // Get text from editText
+                String text = newReminder_popup.getText().toString();
+
+                items.add(text);
+                adapter = new ListViewAdapter(getActivity().getApplicationContext(), items);
+                listView.setAdapter((adapter));
+            }
+        });
+
+        exit_popupWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 }
