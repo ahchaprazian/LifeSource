@@ -3,6 +3,7 @@ package com.example.lifesoruce;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +32,6 @@ public class ProfileFragment extends Fragment {
     private Button dateButton;
     private int pos = 0;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,6 +41,22 @@ public class ProfileFragment extends Fragment {
 
         listView = binding.listView;
         items = new ArrayList<>();
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+
+        String savedName = sharedPref.getString("name", "");
+        EditText editNameView = binding.nameView;
+        editNameView.setText(savedName);
+
+        int numOfSavedItems = sharedPref.getInt("numOfItems", 0);
+        if (numOfSavedItems > 0) {
+            for (int i = 0; i < numOfSavedItems; i++) {
+                items.add(sharedPref.getString(String.valueOf(i), ""));
+                pos = pos + 1;
+            }
+            adapter = new ListViewAdapter(getActivity().getApplicationContext(), items);
+            listView.setAdapter((adapter));
+        }
 
         /*
         * When the button in the bottom corner is clicked
@@ -86,6 +101,23 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.clear();
+
+        EditText editNameView = binding.nameView;
+        editor.putString("name", editNameView.getText().toString());
+
+        int itemSize = items.size();
+        editor.putInt("numOfItems", itemSize);
+        for (int i = 0; i < itemSize; i++) {
+            editor.putString(String.valueOf(i), items.get(i));
+        }
+
+        editor.apply();
+
         binding = null;
     }
 
