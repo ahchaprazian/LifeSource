@@ -39,13 +39,13 @@ import com.google.android.gms.tasks.Task;
 public class MapFragment extends Fragment {
     private FragmentMapBinding binding;
 
-    private static final String TAG = "MapFragment";
+    /*private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private Boolean myLocationPermissionGranted = false;
+    private Boolean myLocationPermissionGranted = false;*/
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private GoogleMap myMap;
-    private FusedLocationProviderClient myFusedLocationProviderClient;
+    /*private FusedLocationProviderClient myFusedLocationProviderClient;*/
     private static final float DEFAULT_ZOOM = 10f;
     private static final LatLng DEFAULT_LOCATION = new LatLng(42.6502, -71.3239);
 
@@ -54,7 +54,7 @@ public class MapFragment extends Fragment {
         public void onMapReady(@NonNull GoogleMap googleMap) {
             myMap = googleMap;
 
-            if (myLocationPermissionGranted) {
+            /*if (myLocationPermissionGranted) {
                 getDeviceLocation();
 
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -64,7 +64,8 @@ public class MapFragment extends Fragment {
                 myMap.getUiSettings().setMyLocationButtonEnabled(false);
             } else {
                 moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);
-            }
+            }*/
+            moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);
 
             myMap.addMarker(new MarkerOptions()
                             .position(new LatLng(42.6502, -71.3152))
@@ -123,7 +124,7 @@ public class MapFragment extends Fragment {
         }
     };
 
-    private void getDeviceLocation() {
+    /*private void getDeviceLocation() {
         myFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         try {
@@ -146,7 +147,7 @@ public class MapFragment extends Fragment {
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
-    }
+    }*/
 
     private void moveCamera(LatLng latLing, float zoom) {
         myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLing, zoom));
@@ -160,7 +161,7 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void getLocationPermission() {
+    /*private void getLocationPermission() {
         //String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -177,7 +178,7 @@ public class MapFragment extends Fragment {
             requestPermissionLauncher.launch(FINE_LOCATION);
             //initMAp();
         }
-    }
+    }*/
 
     /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -199,7 +200,7 @@ public class MapFragment extends Fragment {
         }
     }*/
 
-    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+    /*private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
         public void onActivityResult(Boolean result) {
             if (result) {
@@ -212,7 +213,7 @@ public class MapFragment extends Fragment {
                 initMAp();
             }
         }
-    });
+    });*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -221,7 +222,8 @@ public class MapFragment extends Fragment {
         binding = FragmentMapBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        getLocationPermission();
+        /*getLocationPermission();*/
+        initMAp();
 
         return view;
     }
