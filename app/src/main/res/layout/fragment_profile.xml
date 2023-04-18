@@ -1,49 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="50"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".ProfileFragment">
+
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/profile_placeholder"
+        android:layout_marginBottom="16dp" />
 
     <EditText
         android:id="@+id/nameView"
-        android:layout_width="159dp"
-        android:layout_height="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
         android:hint="@string/enterNameHint"
         android:inputType="text"
+        android:imeOptions="actionDone"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        android:maxLength="100"
+        android:maxLines="10"
+        android:ellipsize="end"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:id="@+id/recentRemindersView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="20"
-        android:gravity="top|center"
+        android:gravity="center_horizontal"
         android:text="@string/recentReminders"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameView"
-        app:layout_constraintVertical_bias="0.264"
-        tools:layout_editor_absoluteX="16dp" />
+        android:layout_marginBottom="16dp" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/recentRemindersView"/>
-
+        android:scrollbars="vertical" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -53,9 +56,7 @@
         android:layout_margin="16dp"
         android:src="@drawable/add_icon"
         app:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:pressedTranslationZ="12dp"
         android:contentDescription="TODO" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
