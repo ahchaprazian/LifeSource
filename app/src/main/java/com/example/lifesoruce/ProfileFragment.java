@@ -158,8 +158,6 @@ public class ProfileFragment extends Fragment {
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Show popupLayout
-                //binding.popupLayout.setVisibility(View.VISIBLE);
                 createNewReminderDialog();
             }
         });
@@ -186,7 +184,6 @@ public class ProfileFragment extends Fragment {
         SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        // Removed editor.clear()
 
         EditText editNameView = binding.nameView;
         editor.putString("name", editNameView.getText().toString());
