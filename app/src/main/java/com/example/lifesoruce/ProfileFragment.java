@@ -177,16 +177,9 @@ public class ProfileFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
+    private void saveItems() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-
-
-        EditText editNameView = binding.nameView;
-        editor.putString("name", editNameView.getText().toString());
 
         int itemSize = items.size();
         editor.putInt("numOfItems", itemSize);
@@ -195,9 +188,24 @@ public class ProfileFragment extends Fragment {
         }
 
         editor.apply();
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        EditText editNameView = binding.nameView;
+        editor.putString("name", editNameView.getText().toString());
+
+        saveItems();
 
         binding = null;
     }
+
 
     public void createNewReminderDialog() {
         dialogBuilder = new AlertDialog.Builder(getActivity());
@@ -229,6 +237,7 @@ public class ProfileFragment extends Fragment {
                 adapter = new ListViewAdapter(getActivity().getApplicationContext(), items);
                 listView.setAdapter((adapter));
                 dialog.dismiss();
+                saveItems();
             }
         });
 
