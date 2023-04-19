@@ -12,6 +12,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,11 +45,8 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private ListView listView;
     private ListViewAdapter adapter;
-    private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-    private EditText newReminder_popup;
-    private Button exit_popupWindow, addItem_popupWindow;
-    private Button dateButton;
+    private EditText newReminderPopup;
     private static ProfileViewModel profileViewModel;
 
     private int pos = 0;
@@ -111,7 +110,8 @@ public class ProfileFragment extends Fragment {
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
 
-        String savedImagePath = sharedPref.getString("savedImagePath", null);
+        String savedImagePath = profileViewModel.getSavedImagePath(getActivity());
+        ///sharedPref.getString("savedImagePath", null);
         if (savedImagePath != null) {
             try {
                 File file = new File(savedImagePath);
@@ -123,7 +123,7 @@ public class ProfileFragment extends Fragment {
         }
 
 
-        String savedName = sharedPref.getString("name", "");
+        String savedName = profileViewModel.getSavedName(getActivity());//sharedPref.getString("name", "");
         EditText editNameView = binding.nameView;
         editNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -139,8 +139,28 @@ public class ProfileFragment extends Fragment {
         });
 
         editNameView.setText(savedName);
+        editNameView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-        int numOfSavedItems = sharedPref.getInt("numOfItems", 0);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String name = s.toString();
+                profileViewModel.saveName(getActivity(), name);
+            }
+        });
+
+        profileViewModel.loadSavedItems(getActivity());
+        adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), this);
+        listView.setAdapter((adapter));
+
+
+        /*int numOfSavedItems = sharedPref.getInt("numOfItems", 0);
         if (numOfSavedItems > 0) {
             profileViewModel.clearItems();
             for (int i = 0; i < numOfSavedItems; i++) {
@@ -149,7 +169,7 @@ public class ProfileFragment extends Fragment {
             }
             adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), this);
             listView.setAdapter((adapter));
-        }
+        }*/
 
         /*
         * When the button in the bottom corner is clicked
@@ -171,19 +191,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void saveItems() {
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        int itemSize = profileViewModel.getItems().size();
-        editor.putInt("numOfItems", itemSize);
-        for (int i = 0; i < itemSize; i++) {
-            editor.putString(String.valueOf(i), profileViewModel.getItems().get(i));
-        }
-
-        editor.apply();
+        profileViewModel.saveItems(getActivity());
         adapter.notifyDataSetChanged(); // Update the adapter
     }
-
 
 
     public void removeItem(int remove) {
@@ -196,11 +206,8 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        EditText editNameView = binding.nameView;
-        editor.putString("name", editNameView.getText().toString());
+        String name = binding.nameView.getText().toString();
+        profileViewModel.saveName(getActivity(), name);
 
         saveItems();
 
@@ -208,25 +215,26 @@ public class ProfileFragment extends Fragment {
     }
 
 
+
     public void createNewReminderDialog() {
-        dialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         final View contactPopupView = getLayoutInflater().inflate(R.layout.popup, null);
 
-        newReminder_popup = contactPopupView.findViewById(R.id.reminderText);
-        addItem_popupWindow = contactPopupView.findViewById(R.id.addReminderButton);
-        exit_popupWindow = contactPopupView.findViewById(R.id.exitPopupButton);
-        dateButton = contactPopupView.findViewById(R.id.dateButton);
+        newReminderPopup = contactPopupView.findViewById(R.id.reminderText);
+        Button addItemPopupWindow = contactPopupView.findViewById(R.id.addReminderButton);
+        Button exitPopupWindow = contactPopupView.findViewById(R.id.exitPopupButton);
+        Button dateButton = contactPopupView.findViewById(R.id.dateButton);
 
         dialogBuilder.setView(contactPopupView);
         dialog = dialogBuilder.create();
         dialog.show();
 
 
-        addItem_popupWindow.setOnClickListener(new View.OnClickListener(){
+        addItemPopupWindow.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 // Get text from editText
-                String text = newReminder_popup.getText().toString();
+                String text = newReminderPopup.getText().toString();
 
                 // Append the date to the reminder text
                 if (profileViewModel.getSelectedDate() != null) {
@@ -244,7 +252,7 @@ public class ProfileFragment extends Fragment {
         });
 
 
-        exit_popupWindow.setOnClickListener(new View.OnClickListener() {
+        exitPopupWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
