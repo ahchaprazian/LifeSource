@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.lifesoruce.databinding.FragmentProfileBinding;
 
@@ -36,20 +37,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
-    static ListView listView;
-    static ArrayList<String> items;
-    static ListViewAdapter adapter;
+    private ListView listView;
+    private ListViewAdapter adapter;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private EditText newReminder_popup;
     private Button exit_popupWindow, addItem_popupWindow;
     private Button dateButton;
-    private String selectedDate;
+    private static ProfileViewModel profileViewModel;
 
     private int pos = 0;
     private final ActivityResultLauncher<Intent> imageChooserLauncher = registerForActivityResult(
@@ -98,9 +97,9 @@ public class ProfileFragment extends Fragment {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         listView = binding.listView;
-        items = new ArrayList<>();
 
         binding.profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,11 +142,12 @@ public class ProfileFragment extends Fragment {
 
         int numOfSavedItems = sharedPref.getInt("numOfItems", 0);
         if (numOfSavedItems > 0) {
+            profileViewModel.clearItems();
             for (int i = 0; i < numOfSavedItems; i++) {
-                items.add(sharedPref.getString(String.valueOf(i), ""));
+                profileViewModel.addItem(sharedPref.getString(String.valueOf(i), ""));
                 pos = pos + 1;
             }
-            adapter = new ListViewAdapter(getActivity().getApplicationContext(), items);
+            adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), this);
             listView.setAdapter((adapter));
         }
 
@@ -170,26 +170,27 @@ public class ProfileFragment extends Fragment {
         imageChooserLauncher.launch(intent);
     }
 
-
-
-    public static void removeItem(int remove) {
-        items.remove(remove);
-        listView.setAdapter(adapter);
-    }
-
     private void saveItems() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        int itemSize = items.size();
+        int itemSize = profileViewModel.getItems().size();
         editor.putInt("numOfItems", itemSize);
         for (int i = 0; i < itemSize; i++) {
-            editor.putString(String.valueOf(i), items.get(i));
+            editor.putString(String.valueOf(i), profileViewModel.getItems().get(i));
         }
 
         editor.apply();
+        adapter.notifyDataSetChanged(); // Update the adapter
     }
 
+
+
+    public void removeItem(int remove) {
+        profileViewModel.removeItem(remove);
+        adapter.notifyDataSetChanged(); // Use this instead of setting a new adapter.
+        saveItems(); // Add this line to save the updated list to SharedPreferences.
+    }
 
     @Override
     public void onDestroyView() {
@@ -228,13 +229,14 @@ public class ProfileFragment extends Fragment {
                 String text = newReminder_popup.getText().toString();
 
                 // Append the date to the reminder text
-                if (selectedDate != null) {
-                    text += " (" + selectedDate + ")";
+                if (profileViewModel.getSelectedDate() != null) {
+                    text += " (" + profileViewModel.getSelectedDate() + ")";
                 }
 
-                items.add(text);
+                profileViewModel.addItem(text);
                 pos = pos + 1;
-                adapter = new ListViewAdapter(getActivity().getApplicationContext(), items);
+                adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), ProfileFragment.this);
+
                 listView.setAdapter((adapter));
                 dialog.dismiss();
                 saveItems();
@@ -261,7 +263,7 @@ public class ProfileFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                                profileViewModel.setSelectedDate((monthOfYear + 1) + "-" + dayOfMonth + "-" +  year);
                             }
                         },
                         year, month, day);

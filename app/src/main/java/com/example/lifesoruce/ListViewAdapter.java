@@ -18,10 +18,12 @@ public class ListViewAdapter extends ArrayAdapter<String> {
 
     ArrayList<String> list;
     Context context;
+    private ProfileFragment profileFragment;
 
-    public ListViewAdapter(Context context, ArrayList<String> items) {
+    public ListViewAdapter(Context context, ArrayList<String> items, ProfileFragment profileFragment) {
         super(context, R.layout.list_row, items);
         this.context = context;
+        this.profileFragment = profileFragment;
         list = items;
     }
 
@@ -39,7 +41,7 @@ public class ListViewAdapter extends ArrayAdapter<String> {
             remove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProfileFragment.removeItem(position);
+                    profileFragment.removeItem(position);
                 }
             });
         }
