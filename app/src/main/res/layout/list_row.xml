@@ -22,15 +22,4 @@
         android:layout_alignParentRight="true"
         />
 
-    <!--<ImageView
-        android:layout_width="22sp"
-        android:layout_height="22sp"
-        android:id="@+id/calendar"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/remove"
-        android:layout_marginRight="42sp"
-        android:src="@drawable/calendar_icon"
-        android:layout_alignParentRight="true"
-        />-->
-
 </RelativeLayout>
