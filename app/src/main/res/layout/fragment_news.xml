@@ -7,13 +7,33 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- A RecyclerView to efficiently
-        display a list of articles -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_id"
+    <!-- A SearchView to search for relevant articles -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:iconifiedByDefault="false"
+        app:queryHint="Search articles" />
+
+    <!-- A SwipeRefreshLayout to implement pull-to-refresh functionality -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_view">
+
+        <!-- A RecyclerView to efficiently
+            display a list of articles -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clipToPadding="false">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- loading spinner to be displayed
         while the library fetches news -->
