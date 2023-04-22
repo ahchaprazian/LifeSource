@@ -1,15 +1,18 @@
 package com.example.lifesoruce;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -43,6 +46,42 @@ public class NewsFragment extends Fragment {
 
         binding = FragmentNewsBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        String searchQuery = "blood-donation";
+
+        final SwipeRefreshLayout swipeRefreshLayout = binding.swipeRefreshLayout;
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Create a Handler and Runnable to add a delay
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Perform the refresh operation here, e.g., load new data
+                        get_news_from_api(searchQuery);
+
+                        // Remember to call setRefreshing(false) when the refresh is complete
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000); // The delay is set to 2000 milliseconds (2 seconds)
+            }
+        });
+
+        SearchView searchView = binding.searchView;
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Perform search operation here
+                get_news_from_api(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Update the search results as the user types
+                get_news_from_api(newText);
+                return true;
+            }
+        });
 
         AndroidNetworking.initialize(getActivity().getApplicationContext());
 
@@ -55,12 +94,13 @@ public class NewsFragment extends Fragment {
 
         mArticleList = new ArrayList<>();
 
-        get_news_from_api();
+        //loadBookmarkedArticles();
+        get_news_from_api(searchQuery);
 
         return view;
     }
 
-    private void get_news_from_api() {
+    private void get_news_from_api(String searchQuery) {
         mArticleList.clear();
 
         /* Sends the get request to the news api while displaying everything
@@ -68,7 +108,7 @@ public class NewsFragment extends Fragment {
         * key specified
         */
         AndroidNetworking.get("https://newsapi.org/v2/everything")
-                .addQueryParameter("q", "blood-donation")
+                .addQueryParameter("q", searchQuery)
                 .addQueryParameter("apiKey",API_KEY)
                 .addHeaders("token", "1234")
                 .setTag("test")

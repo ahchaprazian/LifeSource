@@ -2,13 +2,18 @@ package com.example.lifesoruce;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.androidnetworking.widget.ANImageView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
@@ -17,6 +22,75 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     private ArrayList<NewsArticle> mArrayList;
     private Context mContext;
+    private ImageView bookmarkIcon;
+
+    private boolean isArticleBookmarked(NewsArticle article) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
+        String bookmarksJson = sharedPreferences.getString("bookmarked_articles", "[]");
+
+        try {
+            JSONArray bookmarksArray = new JSONArray(bookmarksJson);
+
+            for (int i = 0; i < bookmarksArray.length(); i++) {
+                JSONObject bookmarkedArticle = bookmarksArray.getJSONObject(i);
+                if (bookmarkedArticle.getString("url").equals(article.getUrl())) {
+                    return true;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private boolean toggleBookmark(NewsArticle article) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String bookmarksJson = sharedPreferences.getString("bookmarked_articles", "[]");
+
+        try {
+            JSONArray bookmarksArray = new JSONArray(bookmarksJson);
+            boolean isBookmarked = false;
+            int bookmarkedIndex = -1;
+
+            for (int i = 0; i < bookmarksArray.length(); i++) {
+                JSONObject bookmarkedArticle = bookmarksArray.getJSONObject(i);
+                if (bookmarkedArticle.getString("url").equals(article.getUrl())) {
+                    isBookmarked = true;
+                    bookmarkedIndex = i;
+                    break;
+                }
+            }
+
+            if (isBookmarked) {
+                // Remove the article from the bookmarks
+                bookmarksArray.remove(bookmarkedIndex);
+            } else {
+                // Add the article to the bookmarks
+                JSONObject articleJson = new JSONObject();
+                articleJson.put("author", article.getAuthor());
+                articleJson.put("title", article.getTitle());
+                articleJson.put("description", article.getDescription());
+                articleJson.put("url", article.getUrl());
+                articleJson.put("urlToImage", article.getUrlToImage());
+                articleJson.put("publishedAt", article.getPublishedAt());
+                articleJson.put("content", article.getContent());
+                bookmarksArray.put(articleJson);
+            }
+
+            // Save the updated bookmarks
+            editor.putString("bookmarked_articles", bookmarksArray.toString());
+            editor.apply();
+
+            return !isBookmarked;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     public ArticleAdapter(Context context,ArrayList<NewsArticle> list){
         // initializing the constructor
@@ -55,6 +129,26 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         // setting the content Description on the Image
         holder.image.setContentDescription(currentArticle.getContent());
 
+        // Check if the article is bookmarked
+        if (isArticleBookmarked(currentArticle)) {
+            holder.bookmarkIcon.setImageResource(R.drawable.bookmark_filled);
+        } else {
+            holder.bookmarkIcon.setImageResource(R.drawable.bookmark_icon);
+        }
+
+        // handling click event of the bookmark icon
+        holder.bookmarkIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isBookmarked = toggleBookmark(currentArticle);
+                if (isBookmarked) {
+                    holder.bookmarkIcon.setImageResource(R.drawable.bookmark_filled);
+                } else {
+                    holder.bookmarkIcon.setImageResource(R.drawable.bookmark_icon);
+                }
+            }
+        });
+
         // handling click event of the article
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +175,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         // declaring the views
         private TextView title,description,contributordate;
         private ANImageView image;
+        private ImageView bookmarkIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,6 +184,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             description=itemView.findViewById(R.id.description_id);
             image=itemView.findViewById(R.id.image_id);
             contributordate=itemView.findViewById(R.id.contributordate_id);
+            bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
         }
     }
 
