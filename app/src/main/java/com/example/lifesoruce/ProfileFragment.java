@@ -192,12 +192,16 @@ public class ProfileFragment extends Fragment {
 
     private void saveItems() {
         profileViewModel.saveItems(getActivity());
+        listView.setAdapter(adapter);
         adapter.notifyDataSetChanged(); // Update the adapter
+        //listView.setAdapter(adapter);
     }
 
 
     public void removeItem(int remove) {
         profileViewModel.removeItem(remove);
+        //pos = pos - 1;
+        //listView.setAdapter(adapter);
         adapter.notifyDataSetChanged(); // Use this instead of setting a new adapter.
         saveItems(); // Add this line to save the updated list to SharedPreferences.
     }
@@ -243,9 +247,10 @@ public class ProfileFragment extends Fragment {
 
                 profileViewModel.addItem(text);
                 pos = pos + 1;
-                adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), ProfileFragment.this);
+                adapter.notifyDataSetChanged();
+                //adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), ProfileFragment.this);
 
-                listView.setAdapter((adapter));
+                //listView.setAdapter((adapter));
                 dialog.dismiss();
                 saveItems();
             }

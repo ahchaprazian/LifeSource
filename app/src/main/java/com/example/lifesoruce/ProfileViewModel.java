@@ -20,9 +20,7 @@ public class ProfileViewModel extends ViewModel {
         return items;
     }
 
-    public void addItem(String item) {
-        items.add(item);
-    }
+    public void addItem(String item) { items.add(item); }
 
     public void removeItem(int position) {
         items.remove(position);
