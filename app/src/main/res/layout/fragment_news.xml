@@ -7,21 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- A SearchView to search for relevant articles -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
+    <!-- LinearLayout to hold SearchView and Button -->
+    <LinearLayout
+        android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:iconifiedByDefault="false"
-        app:queryHint="Search articles" />
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true">
+
+        <!-- A SearchView to search for relevant articles -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:iconifiedByDefault="false"
+            app:queryHint="Search articles" />
+
+        <!-- ImageView with bookmark icon to navigate to the bookmarks fragment -->
+        <ImageView
+            android:id="@+id/goto_bookmarks_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bookmark_navigation"
+            android:padding="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
 
     <!-- A SwipeRefreshLayout to implement pull-to-refresh functionality -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search_view">
+        android:layout_below="@id/search_layout">
 
         <!-- A RecyclerView to efficiently
             display a list of articles -->

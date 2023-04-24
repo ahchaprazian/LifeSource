@@ -14,7 +14,11 @@
         android:id="@+id/newsFragment"
         android:name="com.example.lifesoruce.NewsFragment"
         android:label="News"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_newsFragment_to_bookmarkFragment"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.lifesoruce.ProfileFragment"
@@ -25,4 +29,9 @@
         android:name="com.example.lifesoruce.HelpFragment"
         android:label="Help"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/bookmarkFragment"
+        android:name="com.example.lifesoruce.BookmarkFragment"
+        android:label="fragment_bookmark"
+        tools:layout="@layout/fragment_bookmark" />
 </navigation>

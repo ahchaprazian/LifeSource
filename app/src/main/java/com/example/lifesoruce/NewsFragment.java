@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -62,7 +64,7 @@ public class NewsFragment extends Fragment {
                         // Remember to call setRefreshing(false) when the refresh is complete
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, 2000); // The delay is set to 2000 milliseconds (2 seconds)
+                }, 500); // The delay is set to 2000 milliseconds (2 seconds)
             }
         });
 
@@ -71,17 +73,39 @@ public class NewsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search operation here
-                get_news_from_api(query);
+                if(!query.isEmpty()) {
+                    get_news_from_api(query);
+                }
+                else {
+                    get_news_from_api("blood-donation");
+                }
+
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 // Update the search results as the user types
-                get_news_from_api(newText);
+                if(!newText.isEmpty()) {
+                    get_news_from_api(newText);
+                }
+                else {
+                    get_news_from_api("blood-donation");
+                }
                 return true;
             }
         });
+
+        ImageView gotoBookmarksImageView = binding.gotoBookmarksImageview;
+        gotoBookmarksImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_newsFragment_to_bookmarkFragment);
+                //NewsFragmentDirections.actionNewsFragmentToBookmarkFragment()
+
+            }
+        });
+
 
         AndroidNetworking.initialize(getActivity().getApplicationContext());
 
