@@ -188,4 +188,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         }
     }
 
+    public void updateArticlesList(ArrayList<NewsArticle> newArticlesList) {
+        this.mArrayList = newArticlesList;
+    }
+
+
 }
