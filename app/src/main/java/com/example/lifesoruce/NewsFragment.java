@@ -101,8 +101,6 @@ public class NewsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(view).navigate(R.id.action_newsFragment_to_bookmarkFragment);
-                //NewsFragmentDirections.actionNewsFragmentToBookmarkFragment()
-
             }
         });
 
