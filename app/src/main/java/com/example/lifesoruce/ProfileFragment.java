@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -59,7 +60,7 @@ public class ProfileFragment extends Fragment {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImage);
                         String imagePath = saveImageToInternalStorage(bitmap);
 
-                        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences("profilePic", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("savedImagePath", imagePath);
                         editor.apply();
@@ -106,9 +107,6 @@ public class ProfileFragment extends Fragment {
                 openImageChooser();
             }
         });
-
-
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
 
         String savedImagePath = profileViewModel.getSavedImagePath(getActivity());
         ///sharedPref.getString("savedImagePath", null);
@@ -197,12 +195,15 @@ public class ProfileFragment extends Fragment {
         //listView.setAdapter(adapter);
     }
 
+    public String getItem(int position) {
+        return profileViewModel.getItem(position);
+    }
 
     public void removeItem(int remove) {
-        profileViewModel.removeItem(remove);
+        profileViewModel.removeItem(getActivity(), remove);
         //pos = pos - 1;
         //listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged(); // Use this instead of setting a new adapter.
+        //adapter.notifyDataSetChanged(); // Use this instead of setting a new adapter.
         saveItems(); // Add this line to save the updated list to SharedPreferences.
     }
 
@@ -231,8 +232,13 @@ public class ProfileFragment extends Fragment {
 
         dialogBuilder.setView(contactPopupView);
         dialog = dialogBuilder.create();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                profileViewModel.setSelectedDate(null);
+            }
+        });
         dialog.show();
-
 
         addItemPopupWindow.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -247,7 +253,7 @@ public class ProfileFragment extends Fragment {
 
                 profileViewModel.addItem(text);
                 pos = pos + 1;
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
                 //adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), ProfileFragment.this);
 
                 //listView.setAdapter((adapter));

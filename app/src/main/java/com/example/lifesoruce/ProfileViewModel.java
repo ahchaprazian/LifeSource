@@ -20,37 +20,30 @@ public class ProfileViewModel extends ViewModel {
         return items;
     }
 
+    public String getItem(int position) { return items.get(position); }
+
     public void addItem(String item) { items.add(item); }
 
-    public void removeItem(int position) {
-        items.remove(position);
-    }
+    public void removeItem(Context context, int position) { items.remove(position); }
 
-    public void clearItems() {
-        items.clear();
-    }
+    public void clearItems() { items.clear(); }
 
+    public String getSelectedDate() { return selectedDate; }
 
-    public String getSelectedDate() {
-        return selectedDate;
-    }
-
-    public void setSelectedDate(String selectedDate) {
-        this.selectedDate = selectedDate;
-    }
+    public void setSelectedDate(String selectedDate) { this.selectedDate = selectedDate; }
 
     public String getSavedImagePath(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("profilePic", Context.MODE_PRIVATE);
         return sharedPref.getString("savedImagePath", null);
     }
 
     public String getSavedName(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("username", Context.MODE_PRIVATE);
         return sharedPref.getString("name", "");
     }
 
     public void saveName(Context context, String name) {
-        SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("username", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("name", name);
         editor.apply();
@@ -72,6 +65,7 @@ public class ProfileViewModel extends ViewModel {
         SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
+        editor.clear();
         int itemSize = getItems().size();
         editor.putInt("numOfItems", itemSize);
         for (int i = 0; i < itemSize; i++) {
