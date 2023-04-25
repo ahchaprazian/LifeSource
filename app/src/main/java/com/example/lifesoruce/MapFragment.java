@@ -55,11 +55,8 @@ public class MapFragment extends Fragment {
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private Boolean myLocationPermissionGranted = false;
-    //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private GoogleMap myMap;
     private FusedLocationProviderClient myFusedLocationProviderClient;
-    //private LocationRequest myLocationRequest;
-    //private LocationCallback myLocationCallback;
     private static final float DEFAULT_ZOOM = 10f;
     private static final LatLng DEFAULT_LOCATION = new LatLng(42.6502, -71.3239);
     private Location myCurrentLocation;
@@ -83,11 +80,9 @@ public class MapFragment extends Fragment {
                         return true;
                     }
                 });
-                //myMap.getUiSettings().setMyLocationButtonEnabled(false);
             } else {
                 moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);
             }
-            /*moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);*/
             myMap.getUiSettings().setZoomControlsEnabled(true);
 
             myMap.addMarker(new MarkerOptions()
@@ -252,8 +247,6 @@ public class MapFragment extends Fragment {
                             .snippet("\u2022 403 Belmont St Suite 400, Worcester, MA 01604\n\n\u2022 (508) 793-2905\n\n\u2022 https://www.grifolsplasma.com/en/-/belmontst-worcester-ma\n\n\u2022 Prepaid Grifolis Visa Debit Card Refilled per Donation. Up to $640 a Month for New Donors"))
                     .setTag("https://www.grifolsplasma.com/en/-/belmontst-worcester-ma");
 
-            //myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(42.6553, -71.3247), 10f));
-
             myMap.setInfoWindowAdapter(new InfoWindowAdapter(getActivity()));
 
             myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -276,27 +269,6 @@ public class MapFragment extends Fragment {
 
     private void getDeviceLocation() {
         myFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            myLocationRequest = new LocationRequest.Builder(2+5000).setQuality(LocationRequest.QUALITY_HIGH_ACCURACY).build();
-        }
-        myLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    String Lat = String.valueOf(location.getLatitude());
-                    String Lon = String.valueOf(location.getLongitude());
-
-                    Toast.makeText(getActivity(), Lat + "-" + Lon, Toast.LENGTH_SHORT).show();
-                    myCurrentLocation = location;
-                    moveCamera(new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude()), DEFAULT_ZOOM);
-                }
-            }
-        };*/
-
 
         try {
             if (myLocationPermissionGranted) {
@@ -304,34 +276,15 @@ public class MapFragment extends Fragment {
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        /*LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-                        Criteria criteria = new Criteria();
-                        String bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
-                        LocationListener locationListener = new LocationListener() {
-                            @Override
-                            public void onLocationChanged(@NonNull Location location) {
-                                locationManager.removeUpdates(this::onLocationChanged);
-
-                                String Lat = String.valueOf(location.getLatitude());
-                                String Lon = String.valueOf(location.getLongitude());
-                                Toast.makeText(getActivity(), Lat + "-" + Lon, Toast.LENGTH_SHORT).show();
-
-                                myCurrentLocation = location;
-                                moveCamera(new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude()), DEFAULT_ZOOM);
-                            }
-                        };*/
-
                         if (task.isSuccessful() && (Location) task.getResult() != null) {
-                            Log.d(TAG, "onComplete: found location!");
                             myCurrentLocation = (Location) task.getResult();
                             moveCamera(new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude()), DEFAULT_ZOOM);
+                            Log.d(TAG, "onComplete: found location!");
                             Log.d(TAG, String.valueOf(myCurrentLocation.getLatitude()) + "-" + String.valueOf(myCurrentLocation.getLongitude()));
-                            Toast.makeText(getActivity(), String.valueOf(myCurrentLocation.getLatitude()) + "-" + String.valueOf(myCurrentLocation.getLongitude()), Toast.LENGTH_LONG).show();
                         } else {
-                            //locationManager.requestLocationUpdates(bestProvider, 1000, 0, locationListener);
+                            moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);
                             Log.d(TAG, "onComplete: current location is null");
                             Toast.makeText(getActivity(), "unable to get current location", Toast.LENGTH_SHORT).show();
-                            moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);
                         }
                     }
                 });
@@ -340,26 +293,6 @@ public class MapFragment extends Fragment {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
-
-    /*private void createLocationRequest() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            myLocationRequest = new LocationRequest.Builder(2+5000).setQuality(LocationRequest.QUALITY_HIGH_ACCURACY).build();
-        }
-    }
-
-    private void startLocationUpdates() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-        }
-
-        myFusedLocationProviderClient.requestLocationUpdates(myLocationRequest, myLocationCallback, Looper.getMainLooper());
-    }
-
-    private void stopLocationUpdates() {
-        myFusedLocationProviderClient.removeLocationUpdates(myLocationCallback);
-    }*/
 
     private void moveCamera(LatLng latLing, float zoom) {
         myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLing, zoom));
@@ -374,43 +307,17 @@ public class MapFragment extends Fragment {
     }
 
     private void getLocationPermission() {
-        //String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 myLocationPermissionGranted = true;
                 initMAp();
             } else {
-                //ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
                 requestPermissionLauncher.launch(COARSE_LOCATION);
-                //initMAp();
             }
         } else {
-            //ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
             requestPermissionLauncher.launch(FINE_LOCATION);
-            //initMAp();
         }
     }
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        myLocationPermissionGranted = false;
-
-        switch (requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE: {
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < grantResults.length; i++) {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            return;
-                        }
-                    }
-                    myLocationPermissionGranted = true;
-                    //initialize our map
-                    initMAp();
-                }
-            }
-        }
-    }*/
 
     private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
@@ -435,31 +342,9 @@ public class MapFragment extends Fragment {
         View view = binding.getRoot();
 
         getLocationPermission();
-        /*initMAp();*/
 
         return view;
     }
-
-    /*@Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
-    }*/
-
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        startLocationUpdates();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stopLocationUpdates();
-    }*/
 
     @Override
     public void onDestroyView() {
