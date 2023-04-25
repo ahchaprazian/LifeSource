@@ -32,6 +32,6 @@
     <fragment
         android:id="@+id/bookmarkFragment"
         android:name="com.example.lifesoruce.BookmarkFragment"
-        android:label="fragment_bookmark"
+        android:label="Bookmarks"
         tools:layout="@layout/fragment_bookmark" />
 </navigation>
