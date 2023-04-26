@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -90,7 +92,6 @@ public class ProfileFragment extends Fragment {
         return file.getAbsolutePath();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -109,7 +110,6 @@ public class ProfileFragment extends Fragment {
         });
 
         String savedImagePath = profileViewModel.getSavedImagePath(getActivity());
-        ///sharedPref.getString("savedImagePath", null);
         if (savedImagePath != null) {
             try {
                 File file = new File(savedImagePath);
@@ -157,18 +157,6 @@ public class ProfileFragment extends Fragment {
         adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), this);
         listView.setAdapter((adapter));
 
-
-        /*int numOfSavedItems = sharedPref.getInt("numOfItems", 0);
-        if (numOfSavedItems > 0) {
-            profileViewModel.clearItems();
-            for (int i = 0; i < numOfSavedItems; i++) {
-                profileViewModel.addItem(sharedPref.getString(String.valueOf(i), ""));
-                pos = pos + 1;
-            }
-            adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), this);
-            listView.setAdapter((adapter));
-        }*/
-
         /*
         * When the button in the bottom corner is clicked
         * the pop up that prompts the user to enter their text is displayed
@@ -192,7 +180,6 @@ public class ProfileFragment extends Fragment {
         profileViewModel.saveItems(getActivity());
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged(); // Update the adapter
-        //listView.setAdapter(adapter);
     }
 
     public String getItem(int position) {
@@ -201,9 +188,6 @@ public class ProfileFragment extends Fragment {
 
     public void removeItem(int remove) {
         profileViewModel.removeItem(getActivity(), remove);
-        //pos = pos - 1;
-        //listView.setAdapter(adapter);
-        //adapter.notifyDataSetChanged(); // Use this instead of setting a new adapter.
         saveItems(); // Add this line to save the updated list to SharedPreferences.
     }
 
@@ -243,22 +227,24 @@ public class ProfileFragment extends Fragment {
         addItemPopupWindow.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // Get text from editText
-                String text = newReminderPopup.getText().toString();
+                // Check if text from editText is empty
+                if (!newReminderPopup.getText().toString().trim().isEmpty()) {
+                    // Get text from editText
+                    String text = newReminderPopup.getText().toString();
+                    Log.d("ProfileFragment", "string is: " + text);
 
-                // Append the date to the reminder text
-                if (profileViewModel.getSelectedDate() != null) {
-                    text += " (" + profileViewModel.getSelectedDate() + ")";
+                    // Append the date to the reminder text
+                    if (profileViewModel.getSelectedDate() != null) {
+                        text += " (" + profileViewModel.getSelectedDate() + ")";
+                    }
+
+                    profileViewModel.addItem(text);
+                    pos = pos + 1;
+                    saveItems();
+                } else {
+                    Toast.makeText(getActivity(), "invalid reminder name", Toast.LENGTH_SHORT).show();
                 }
-
-                profileViewModel.addItem(text);
-                pos = pos + 1;
-                //adapter.notifyDataSetChanged();
-                //adapter = new ListViewAdapter(getActivity().getApplicationContext(), profileViewModel.getItems(), ProfileFragment.this);
-
-                //listView.setAdapter((adapter));
                 dialog.dismiss();
-                saveItems();
             }
         });
 
