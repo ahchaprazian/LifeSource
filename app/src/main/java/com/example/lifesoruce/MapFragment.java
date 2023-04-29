@@ -17,17 +17,23 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
 import com.example.lifesoruce.databinding.FragmentMapBinding;
+import com.example.lifesoruce.databinding.FragmentNewsBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,10 +59,17 @@ public class MapFragment extends Fragment {
     private static final LatLng DEFAULT_LOCATION = new LatLng(42.6502, -71.3239);
     private Location myCurrentLocation;
 
-    // Function for when map is ready for use.
-    // Sets up map with map pins and basic controls.
-    // (location, home, and zoom buttons)
-    // Configures map's zoom based on user's location.
+    /**
+     * Sets up the map with all the map pins to be displayed and navigation functions
+     * once it ready for use. If user location permissions were granted, sets the map
+     * to indicate the user's last known location and enable a location pinpoint button
+     * to focus the map to that location. Configures a home button to reset the map focus
+     * to be the default location, UCrossing, and enables zoom controls. Enables custom
+     * info windows for map pins to display relevant information on those donation
+     * centers, and these info windows can be clicked to redirect to their website.
+     *
+     * @param googleMap The Google Map object that is ready to be used
+     */
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -274,7 +287,14 @@ public class MapFragment extends Fragment {
         }
     };
 
-    // Function to retrieve user's current location data.
+    /**
+     * Retrieves user's last known location on the device. Attemps to do so
+     * if location permission were previously granted. Handles whether the
+     * retrieved location is valid or not. If valid, the map sets focus to
+     * that location. Otherwise, the app alerts the user that no location
+     * could be found (null), and instead focuses the map on the default
+     * location, UCrossing.
+     */
     private void getDeviceLocation() {
         myFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
@@ -321,7 +341,11 @@ public class MapFragment extends Fragment {
         }
     }
 
-    // Function to get user permissions for location services.
+    /**
+     * Checks whether user permissions are enabled for location services. If so, sets
+     * a boolean variable as such and initializes the map. Otherwise, requests the
+     * user for the necessary location permissions.
+     */
     private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -339,6 +363,12 @@ public class MapFragment extends Fragment {
     }
 
     // Function to handle user's response to app requesting user location permissions.
+    /**
+     * Handles the user's response to being requested user location permissions.
+     * If permission was granted, sets a boolean variable as such and initializes
+     * the map using that location data. Otherwise, sets the boolean variable
+     * accordingly and initializes the map with a default location, UCrossing.
+     */
     private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
         public void onActivityResult(Boolean result) {
