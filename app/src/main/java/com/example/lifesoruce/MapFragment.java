@@ -1,43 +1,35 @@
+// File to handle majority of map fragment's data and logic.
+// Handles displaying map via Google Maps SDK
+// with map pins and related controls.
+// Uses relevant Google Maps libraries for
+// maps functionalities, including location services.
+
 package com.example.lifesoruce;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationRequest;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.location.LocationRequestCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.lifesoruce.databinding.FragmentMapBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -61,18 +53,28 @@ public class MapFragment extends Fragment {
     private static final LatLng DEFAULT_LOCATION = new LatLng(42.6502, -71.3239);
     private Location myCurrentLocation;
 
+    // Function for when map is ready for use.
+    // Sets up map with map pins and basic controls.
+    // (location, home, and zoom buttons)
+    // Configures map's zoom based on user's location.
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
+            // Sets map object.
             myMap = googleMap;
 
+            // Configures map's zoom based on whether
+            // location permissions were granted.
+            // Otherwise, use default zoom.
             if (myLocationPermissionGranted) {
                 getDeviceLocation();
 
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
+                // Display user location.
                 myMap.setMyLocationEnabled(true);
+                // Sets user location button.
                 myMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                     @Override
                     public boolean onMyLocationButtonClick() {
@@ -85,6 +87,7 @@ public class MapFragment extends Fragment {
             }
             myMap.getUiSettings().setZoomControlsEnabled(true);
 
+            // Add map pins with relevant information.
             myMap.addMarker(new MarkerOptions()
                             .position(new LatLng(42.6502, -71.3152))
                             .title("HemaCare Donor Center")
@@ -247,8 +250,11 @@ public class MapFragment extends Fragment {
                             .snippet("\u2022 403 Belmont St Suite 400, Worcester, MA 01604\n\n\u2022 (508) 793-2905\n\n\u2022 https://www.grifolsplasma.com/en/-/belmontst-worcester-ma\n\n\u2022 Prepaid Grifolis Visa Debit Card Refilled per Donation. Up to $640 a Month for New Donors"))
                     .setTag("https://www.grifolsplasma.com/en/-/belmontst-worcester-ma");
 
+            // Enables custom info windows for map pins.
             myMap.setInfoWindowAdapter(new InfoWindowAdapter(getActivity()));
 
+            // Set listener for info windows to redirected to
+            // donation center's website.
             myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(@NonNull Marker marker) {
@@ -258,6 +264,7 @@ public class MapFragment extends Fragment {
                 }
             });
 
+            // Set listener for home button to reset map zoom.
             binding.homeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -267,21 +274,26 @@ public class MapFragment extends Fragment {
         }
     };
 
+    // Function to retrieve user's current location data.
     private void getDeviceLocation() {
         myFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+        // Try getting user location data if permission granted.
         try {
             if (myLocationPermissionGranted) {
+                // Try getting user's last known location.
                 Task location = myFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful() && (Location) task.getResult() != null) {
+                            // If user location is known, set map zoom accordingly.
                             myCurrentLocation = (Location) task.getResult();
                             moveCamera(new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude()), DEFAULT_ZOOM);
                             Log.d(TAG, "onComplete: found location!");
                             Log.d(TAG, String.valueOf(myCurrentLocation.getLatitude()) + "-" + String.valueOf(myCurrentLocation.getLongitude()));
                         } else {
+                            // If user location is not known, use default map zoom.
                             moveCamera(DEFAULT_LOCATION, DEFAULT_ZOOM);
                             Log.d(TAG, "onComplete: current location is null");
                             Toast.makeText(getActivity(), "unable to get current location", Toast.LENGTH_SHORT).show();
@@ -294,10 +306,13 @@ public class MapFragment extends Fragment {
         }
     }
 
+    // Function to reset map camera based on argument
+    // latitude longitude and zoom values.
     private void moveCamera(LatLng latLing, float zoom) {
         myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLing, zoom));
     }
 
+    // Function to initialize map for display.
     private void initMAp() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
@@ -306,34 +321,41 @@ public class MapFragment extends Fragment {
         }
     }
 
+    // Function to get user permissions for location services.
     private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // If location permissions are granted, initialize map.
                 myLocationPermissionGranted = true;
                 initMAp();
             } else {
+                // If coarse location permission not granted, request it.
                 requestPermissionLauncher.launch(COARSE_LOCATION);
             }
         } else {
+            // If fine location permission not granted, request it.
             requestPermissionLauncher.launch(FINE_LOCATION);
         }
     }
 
+    // Function to handle user's response to app requesting user location permissions.
     private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
         @Override
         public void onActivityResult(Boolean result) {
             if (result) {
-                // permission granted
+                // If permission granted.
                 myLocationPermissionGranted = true;
                 initMAp();
             } else {
-                // permission not granted
+                // If permission not granted.
                 myLocationPermissionGranted = false;
                 initMAp();
             }
         }
     });
 
+    // Function for when fragment view is created.
+    // Inflates fragment via view binding and sets up map.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -346,6 +368,8 @@ public class MapFragment extends Fragment {
         return view;
     }
 
+    // Function for when fragment view is destroyed.
+    // Resets view binding.
     @Override
     public void onDestroyView() {
         super.onDestroyView();
