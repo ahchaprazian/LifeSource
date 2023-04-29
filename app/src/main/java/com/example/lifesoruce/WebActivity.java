@@ -1,3 +1,11 @@
+/**
+ *  WebActivity is an Android activity that displays web pages using a WebView.
+ *  It is part of the com.example.lifesoruce package. This activity is responsible
+ *  for loading and displaying a web page from a given URL that is passed through
+ *  an intent.
+ *  The activity utilizes ActivityWebBinding to access the views of its layout
+ *  and manage the WebView for loading and displaying the web page.
+ */
 package com.example.lifesoruce;
 
 import android.content.Intent;

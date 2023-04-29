@@ -1,3 +1,10 @@
+/**
+ *  NewsArticle is a simple data model class representing a news article in the com.example.lifesoruce package.
+ *  It stores various attributes of a news article, such as the author, title, description, url, urlToImage, publishedAt,
+ *  and content. This class provides getters and setters for accessing and modifying these attributes.
+ *  NewsArticle can be used to hold the data fetched from the News API and display it in a RecyclerView within the
+ *  NewsFragment.
+ */
 package com.example.lifesoruce;
 
 public class NewsArticle {

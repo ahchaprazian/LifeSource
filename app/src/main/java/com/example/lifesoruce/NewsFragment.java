@@ -1,3 +1,11 @@
+/**
+ *  NewsFragment is an Android fragment that displays a list of news articles related to a search query.
+ *  It is part of the com.example.lifesoruce package. This fragment fetches news articles using the News API
+ *  and displays them in a RecyclerView. The user can search for articles using a SearchView, refresh the
+ *  article list using a SwipeRefreshLayout, and navigate to the BookmarkFragment.
+ *  The fragment utilizes FragmentNewsBinding to access the views of its layout and manage the
+ *  RecyclerView, SearchView, SwipeRefreshLayout, and ImageView for navigation.
+ */
 package com.example.lifesoruce;
 
 import android.os.Bundle;

@@ -1,3 +1,11 @@
+/**
+ *  ArticleAdapter is a custom RecyclerView.Adapter class in the com.example.lifesoruce package that displays news articles
+ *  and handles user interactions with the displayed articles, such as bookmarking and opening the article's web page.
+ *  The adapter binds the data from the given NewsArticle objects to the ViewHolder, sets the article's title,
+ *  description, contributor, date, and image, and manages click events for the bookmark icon and article.
+ *  The adapter also provides methods for checking and toggling the bookmark status of an article, updating the list of
+ *  news articles displayed, and retrieving the total number of news articles in the list.
+ */
 package com.example.lifesoruce;
 
 import android.content.Context;

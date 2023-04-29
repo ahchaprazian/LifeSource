@@ -1,3 +1,10 @@
+/**
+ *  BookmarkFragment is a Fragment class in the com.example.lifesoruce package that displays a list of bookmarked news
+ *  articles using a RecyclerView. This fragment provides functionality to refresh the list of bookmarked articles using
+ *  a SwipeRefreshLayout.
+ *  The fragment retrieves the list of bookmarked articles stored in SharedPreferences, converts them into NewsArticle
+ *  objects, and updates the RecyclerView's adapter with the new data, triggering a UI update.
+ */
 package com.example.lifesoruce;
 
 import android.content.Context;
