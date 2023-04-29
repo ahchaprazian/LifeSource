@@ -18,12 +18,27 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * A Fragment class that displays a list of bookmarked news articles using a RecyclerView.
+ * The fragment provides functionality to refresh the list of bookmarked articles using a
+ * SwipeRefreshLayout.
+ */
+
 public class BookmarkFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ArticleAdapter articleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * Initializes and sets up the RecyclerView, SwipeRefreshLayout, and article adapter.
+     *
+     * @param inflater The LayoutInflater used to inflate any views in the fragment
+     * @param container The parent ViewGroup that the fragment's UI should be attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state
+     * @return The View representing the root of the fragment layout
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,6 +67,10 @@ public class BookmarkFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Retrieves the list of bookmarked articles and updates the RecyclerView's adapter with the new data.
+     * Notifies the adapter that the data has changed, triggering a UI update.
+     */
     private void updateBookmarkedArticles() {
         ArrayList<NewsArticle> bookmarkedArticles = getBookmarkedArticles();
         if (articleAdapter == null) {
@@ -64,6 +83,14 @@ public class BookmarkFragment extends Fragment {
     }
 
 
+    /**
+     * Retrieves the list of bookmarked news articles from SharedPreferences and converts them
+     * into a list of NewsArticle objects.
+     *
+     * @return An ArrayList of NewsArticle objects representing the bookmarked articles
+     * @see NewsArticle
+     * @see SharedPreferences
+     */
     private ArrayList<NewsArticle> getBookmarkedArticles() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
         String bookmarksJson = sharedPreferences.getString("bookmarked_articles", "[]");

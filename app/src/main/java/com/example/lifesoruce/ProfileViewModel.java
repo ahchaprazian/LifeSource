@@ -55,7 +55,13 @@ public class ProfileViewModel extends ViewModel {
         return sharedPref.getString("name", "");
     }
 
-    // Function to save user name via shared preferences.
+    /**
+     * Saves the given name to the SharedPreferences under the key "name".
+     *
+     * @param context The Context used to access the SharedPreferences
+     * @param name The name to be saved in the SharedPreferences
+     * @see SharedPreferences
+     */
     public void saveName(Context context, String name) {
         SharedPreferences sharedPref = context.getSharedPreferences("username", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -63,7 +69,13 @@ public class ProfileViewModel extends ViewModel {
         editor.apply();
     }
 
-    // Function to load saved reminders from shared preferences
+    /**
+     * Loads saved items from SharedPreferences and populates the items array with the retrieved data.
+     * The SharedPreferences file is identified by the key "com.example.LifeSource.PREFERENCE_FILE_KEY".
+     *
+     * @param context The Context used to access the SharedPreferences
+     * @see SharedPreferences
+     */
     public void loadSavedItems(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         // Get total number of reminders saved.
@@ -80,7 +92,14 @@ public class ProfileViewModel extends ViewModel {
         }
     }
 
-    // Function to save reminders via shared preferences.
+    /**
+     * Saves the items array to SharedPreferences for persistence across app launches.
+     * The SharedPreferences file is identified by the key "com.example.LifeSource.PREFERENCE_FILE_KEY".
+     * Old saved data is cleared before the current items array is saved.
+     *
+     * @param context The Context used to access the SharedPreferences
+     * @see SharedPreferences
+     */
     public void saveItems(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

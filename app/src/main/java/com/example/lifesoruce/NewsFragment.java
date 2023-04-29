@@ -42,6 +42,22 @@ public class NewsFragment extends Fragment {
     private ArticleAdapter mArticleAdapter;
 
 
+    /**
+     * Initializes the FragmentNewsBinding, sets the SwipeRefreshLayout listener, SearchView listener, and the ImageView
+     * onClick listener. Configures the Android Networking library, initializes the RecyclerView, and fetches news articles
+     * from the API.
+     *
+     * @param inflater The LayoutInflater used to inflate the layout
+     * @param container The ViewGroup that contains the fragment's UI
+     * @param savedInstanceState A Bundle containing the most recent data provided in onSaveInstanceState(Bundle)
+     * @return The View for the fragment's UI
+     * @see FragmentNewsBinding
+     * @see SwipeRefreshLayout
+     * @see SearchView
+     * @see ImageView
+     * @see AndroidNetworking
+     * @see RecyclerView
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,6 +67,7 @@ public class NewsFragment extends Fragment {
         String searchQuery = "blood-donation";
 
         final SwipeRefreshLayout swipeRefreshLayout = binding.swipeRefreshLayout;
+        // swipe lets the user refresh the page to update the article list
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -69,7 +86,13 @@ public class NewsFragment extends Fragment {
         });
 
         SearchView searchView = binding.searchView;
+        // search view allows user to input text but if they remove the text
+        // a default value is entered for the search instead
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+           /**
+            * when entered a text it will pull it in and if its not empty
+            * it will call get_news_from_api with query
+            */
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search operation here
@@ -83,6 +106,10 @@ public class NewsFragment extends Fragment {
                 return true;
             }
 
+            /** if the text is getting changed
+             * the method will live update the displayed list of
+             * articles
+             */
             @Override
             public boolean onQueryTextChange(String newText) {
                 // Update the search results as the user types
@@ -122,6 +149,16 @@ public class NewsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches news articles related to the given search query from the News API and updates the RecyclerView with the
+     * fetched articles. The method clears the current article list before fetching new articles.
+     *
+     * @param searchQuery The search query used to fetch related news articles
+     * @see AndroidNetworking
+     * @see NewsArticle
+     * @see ArticleAdapter
+     * @see RecyclerView
+     */
     private void get_news_from_api(String searchQuery) {
         mArticleList.clear();
 
