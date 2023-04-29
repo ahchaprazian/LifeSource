@@ -19,6 +19,16 @@ public class WebActivity extends AppCompatActivity {
     // declaring the url string variable
     private String url;
     private ActivityWebBinding binding;
+
+    /**
+     * Initializes the ActivityWebBinding, sets the content view, and loads the
+     * URL passed through the intent into the WebView.
+     *
+     * @param savedInstanceState A Bundle containing the most recent data provided
+     *                           in onSaveInstanceState(Bundle)
+     * @see ActivityWebBinding
+     * @see WebView
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

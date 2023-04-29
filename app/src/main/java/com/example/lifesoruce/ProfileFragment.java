@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,10 +57,15 @@ public class ProfileFragment extends Fragment {
     private static ProfileViewModel profileViewModel;
 
     private int pos = 0;
-    // Function to handle retrieving profile picture image from
-    // device's camera roll. If app can access photo, its image
-    // path is saved locally via shared preferences for easy
-    // future access.
+    /**
+     * A private final ActivityResultLauncher<Intent> used to handle the result of a user's image selection from their device.
+     * This launcher is initialized with an ActivityResultContracts.StartActivityForResult() contract to start the image
+     * selection process. When an image is successfully chosen, the launcher retrieves the image, converts it to a bitmap,
+     * saves it to the internal storage, and updates the user's profile picture in both SharedPreferences and the UI.
+     * @see ActivityResultLauncher
+     * @see ActivityResultContracts.StartActivityForResult
+     * @see MediaStore.Images.Media
+     */
     private final ActivityResultLauncher<Intent> imageChooserLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -83,8 +87,15 @@ public class ProfileFragment extends Fragment {
                 }
             });
 
-    // Function to handle saving profile picture images
-    // to internal storage of app.
+    /**
+     * Saves the given Bitmap image to the internal storage of the application as a JPEG file, with the name "profileImage.jpg".
+     * The image is stored in a private directory named "profileImages" which is accessible only to this application.
+     * @param bitmap The Bitmap image to be saved in the internal storage
+     * @return The absolute file path of the saved image
+     * @throws IOException If there is an error while saving the image to internal storage
+     * @see Bitmap
+     * @see ContextWrapper
+     */
     private String saveImageToInternalStorage(Bitmap bitmap) {
         ContextWrapper wrapper = new ContextWrapper(getActivity().getApplicationContext());
         File file = wrapper.getDir("profileImages", Context.MODE_PRIVATE);
@@ -103,11 +114,13 @@ public class ProfileFragment extends Fragment {
         return file.getAbsolutePath();
     }
 
-    // Function for creation of fragment view.
-    // Sets up view binding, view model, and loads saved data
-    // for profile picture, name, and reminders.
-    // Sets basic behavior for user input keyboard
-    // and adding reminders.
+    /**
+     * Function for creation of fragment view.
+     * Sets up view binding, view model, and loads saved data
+     * for profile picture, name, and reminders.
+     * Sets basic behavior for user input keyboard
+     * and adding reminders.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -219,17 +232,20 @@ public class ProfileFragment extends Fragment {
         return profileViewModel.getItem(position);
     }
 
-    // Function to delete specific reminder
-    // within array based on index. Saves
-    // reminders afterward with changes.
+    /**
+     *  Function to delete specific reminder
+     *  within array based on index. Saves
+     *  reminders afterward with changes.*/
     public void removeItem(int remove) {
         profileViewModel.removeItem(getActivity(), remove);
         saveItems(); // Add this line to save the updated list to SharedPreferences.
     }
 
-    // Function for destruction of fragment view.
-    // Saves user name and reminders beforehand.
-    // Resets view binding.
+    /**
+     * Function for destruction of fragment view.
+     * Saves user name and reminders beforehand.
+     * Resets view binding.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -242,11 +258,12 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
-    // Function to handle add reminder button's
-    // basic behavior. Allows button to open
-    // pop-up window with options to add
-    // new reminder, enter reminder name,
-    // add calendar date, and exit window.
+    /** Function to handle add reminder button's
+     * basic behavior. Allows button to open
+     * pop-up window with options to add
+     * new reminder, enter reminder name,
+     * add calendar date, and exit window.
+     */
     public void createNewReminderDialog() {
         // Set up add reminder button.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
@@ -259,9 +276,10 @@ public class ProfileFragment extends Fragment {
 
         dialogBuilder.setView(contactPopupView);
         dialog = dialogBuilder.create();
-        // Set listener for when pop-up window closes.
-        // Clears selected calendar date so it doesn't
-        // get reused for future reminders unintentionally.
+        /** Set listener for when pop-up window closes.
+         * Clears selected calendar date so it doesn't
+         * get reused for future reminders unintentionally.
+         */
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -270,9 +288,10 @@ public class ProfileFragment extends Fragment {
         });
         dialog.show();
 
-        // Set on click listener for adding configured reminder.
-        // Constructs full reminder name from entered name and
-        // calendar date. Checks if entered name is valid.
+        /** Set on click listener for adding configured reminder.
+         * Constructs full reminder name from entered name and
+         * calendar date. Checks if entered name is valid.
+         */
         addItemPopupWindow.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -310,8 +329,11 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // Set on click listener for date button of pop-up window.
-        // Displays calendar and retrieves selected date from user.
+        /*
+         Sets an OnClickListener for the dateButton, which opens a DatePickerDialog when clicked. The DatePickerDialog
+         allows the user to select a specific date from a calendar view. Once a date is chosen, the selected date is
+         saved in the profileViewModel as a formatted string (MM-DD-YYYY).
+         */
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -16,6 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
+/**
+ * A custom RecyclerView.Adapter class that displays news articles and handles user interactions
+ * with the displayed articles, such as bookmarking and opening the article's web page.
+ */
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
     // setting the TAG for debugging purposes
     private static String TAG="ArticleAdapter";
@@ -24,6 +28,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     private Context mContext;
     private ImageView bookmarkIcon;
 
+    /**
+     * Checks if the given article is bookmarked by searching through the stored bookmarks in SharedPreferences.
+     *
+     * @param article The NewsArticle object to check for being bookmarked
+     * @return true if the article is bookmarked, false otherwise
+     */
     private boolean isArticleBookmarked(NewsArticle article) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
         String bookmarksJson = sharedPreferences.getString("bookmarked_articles", "[]");
@@ -44,6 +54,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return false;
     }
 
+    /**
+     * Toggles the bookmark status of a given article. If the article is bookmarked, it is removed from
+     * the bookmarks; if it is not bookmarked, it is added to the bookmarks. The updated bookmarks are
+     * then saved in SharedPreferences.
+     *
+     * @param article The NewsArticle object to toggle the bookmark status of
+     * @return true if the article is now bookmarked, false if it was removed from the bookmarks
+     */
     private boolean toggleBookmark(NewsArticle article) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -92,6 +110,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return false;
     }
 
+    /**
+     * Constructs an ArticleAdapter instance with the given context and list of news articles.
+     *
+     * @param context The context in which the adapter will be used
+     * @param list The ArrayList of NewsArticle objects to display
+     */
     public ArticleAdapter(Context context,ArrayList<NewsArticle> list){
         // initializing the constructor
         this.mContext=context;
@@ -106,6 +130,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds the data from the given NewsArticle object at the specified position to the ViewHolder.
+     * Sets the article's title, description, contributor, and date, as well as handling bookmark
+     * icon click events and article click events.
+     *
+     * @param holder The ViewHolder to bind the data to
+     * @param position The position of the article within the list of articles
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // the parameter position is the index of the current article
@@ -165,11 +197,20 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     }
 
+    /**
+     * Returns the total number of news articles in the list.
+     *
+     * @return The number of articles in the list
+     */
     @Override
     public int getItemCount() {
         return mArrayList.size();
     }
 
+    /**
+     * A custom ViewHolder class that holds the views necessary to display a news article within
+     * a RecyclerView.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         // declaring the views
@@ -188,6 +229,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         }
     }
 
+    /**
+     * Updates the list of news articles displayed by the adapter.
+     *
+     * @param newArticlesList An ArrayList of NewsArticle objects representing the new list of articles
+     */
     public void updateArticlesList(ArrayList<NewsArticle> newArticlesList) {
         this.mArrayList = newArticlesList;
     }
