@@ -1,3 +1,8 @@
+// File to handle help fragment
+// displaying help text about app.
+// No extra logic needed as help
+// text directly placed by strings.
+
 package com.example.lifesoruce;
 
 import android.os.Bundle;
@@ -14,6 +19,8 @@ public class HelpFragment extends Fragment {
 
     private FragmentHelpBinding binding;
 
+    // Function to handle creation of fragment view.
+    // Inflates view
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -24,6 +31,8 @@ public class HelpFragment extends Fragment {
         return view;
     }
 
+    // Function to handle destroying fragment view.
+    // Resets view binding.
     @Override
     public void onDestroyView() {
         super.onDestroyView();

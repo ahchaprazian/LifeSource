@@ -8,6 +8,9 @@ Date: 3/14/2023
 Name: Alexan Chaprazian, Alex Dang
 */
 
+// File to handle main activity of app.
+// Sets up navigation and top/bottom toolbars.
+
 package com.example.lifesoruce;
 
 import android.os.Bundle;
@@ -27,33 +30,43 @@ import com.example.lifesoruce.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    // Function for activity's creation.
+    // Inflates view and sets up navigation
+    // and top/bottom toolbars.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
+        // Set up binding and inflate view.
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
+        // Set up top toolbar.
         setSupportActionBar(binding.toolbar);
 
+        // Set up navigation.
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
 
+        // Set up top toolbar with navigation.
         AppBarConfiguration.Builder builder = new AppBarConfiguration.Builder(navController.getGraph());
         AppBarConfiguration appBarConfiguration = builder.build();
         NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
 
+        // Set up bottom toolbar with navigation.
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
     }
 
+    // Function to set up top toolbar menu items.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    // Function to set up toolbar menu items navigation.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

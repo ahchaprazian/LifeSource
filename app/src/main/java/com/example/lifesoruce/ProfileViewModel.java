@@ -1,3 +1,6 @@
+// File for profile fragment's view model
+// Contains data and functions used by fragment.
+
 package com.example.lifesoruce;
 
 import android.content.Context;
@@ -12,36 +15,47 @@ public class ProfileViewModel extends ViewModel {
     static ArrayList<String> items;
     private String selectedDate;
 
+    // Constructor to set up array of reminders.
     public ProfileViewModel() {
         items = new ArrayList<>();
     }
 
+    // Function to retrieve array of reminders.
     public ArrayList<String> getItems() {
         return items;
     }
 
+    // Function to index array for specific reminder.
     public String getItem(int position) { return items.get(position); }
 
+    // Function to add new reminder to array.
     public void addItem(String item) { items.add(item); }
 
+    // Function to remove indexed reminder from array.
     public void removeItem(Context context, int position) { items.remove(position); }
 
+    // Function to clear array of reminders.
     public void clearItems() { items.clear(); }
 
+    // Function to retrieve saved selected date from calendar.
     public String getSelectedDate() { return selectedDate; }
 
+    // Function to save selected date from calendar.
     public void setSelectedDate(String selectedDate) { this.selectedDate = selectedDate; }
 
+    // Function to load saved profile picture from shared preferences.
     public String getSavedImagePath(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("profilePic", Context.MODE_PRIVATE);
         return sharedPref.getString("savedImagePath", null);
     }
 
+    // Function to load saved user name from shared preferences.
     public String getSavedName(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("username", Context.MODE_PRIVATE);
         return sharedPref.getString("name", "");
     }
 
+    // Function to save user name via shared preferences.
     public void saveName(Context context, String name) {
         SharedPreferences sharedPref = context.getSharedPreferences("username", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -49,25 +63,34 @@ public class ProfileViewModel extends ViewModel {
         editor.apply();
     }
 
+    // Function to load saved reminders from shared preferences
     public void loadSavedItems(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
+        // Get total number of reminders saved.
         int numOfSavedItems = sharedPref.getInt("numOfItems", 0);
 
+        // If reminders exist, iterate through each to retrieve.
         if (numOfSavedItems > 0) {
+            // Clear existing array in case it has old data.
             clearItems();
+            // Iterate through all saved reminders.
             for (int i = 0; i < numOfSavedItems; i++) {
                 addItem(sharedPref.getString(String.valueOf(i), ""));
             }
         }
     }
 
+    // Function to save reminders via shared preferences.
     public void saveItems(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("com.example.LifeSource.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
+        // Clear all old saved data in shared preferences for reminders.
         editor.clear();
+        // Save total number of reminders in array.
         int itemSize = getItems().size();
         editor.putInt("numOfItems", itemSize);
+        // Save all reminders in array.
         for (int i = 0; i < itemSize; i++) {
             editor.putString(String.valueOf(i), getItems().get(i));
         }
