@@ -41,7 +41,8 @@ import java.util.ArrayList;
 public class NewsFragment extends Fragment {
 
     private FragmentNewsBinding binding;
-    private static String API_KEY = "NEWS_API_KEY";
+    private static String API_KEY = BuildConfig.NEWS_API_KEY;
+
     private static String TAG="NewsFragment";
 
     private ProgressBar mProgressBar;

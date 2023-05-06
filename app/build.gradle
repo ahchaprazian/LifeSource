@@ -5,6 +5,16 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
+apply plugin: 'com.android.application'
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
 android {
     namespace 'com.example.lifesoruce'
     compileSdk 33
@@ -17,6 +27,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [MAPS_API_KEY: localProperties['MAPS_API_KEY']]
+        buildConfigField 'String', 'NEWS_API_KEY', "\"${localProperties['NEWS_API_KEY']}\""
     }
 
     buildTypes {
